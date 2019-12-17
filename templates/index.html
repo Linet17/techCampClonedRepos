@@ -10,12 +10,10 @@
         body {
             background-color: lightgreen;
         }
-
         h1 {
             color: white;
             text-align: center;
         }
-
         p {
             font-family: verdana;
             font-size: 20px;
@@ -27,6 +25,7 @@
 
 <body>
 <div class="container">
+
     <div class="row">
         <div class="col-4"></div>
         <div class="col-4">
@@ -123,39 +122,61 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Banana</td>
-                    <td>Product</td>
-                    <td>200</td>
-                    <td>400</td>
-                    <td>500</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Apple</td>
-                    <td>Product</td>
-                    <td>500</td>
-                    <td>1000</td>
-                    <td>2200</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Massage</td>
-                    <td>service</td>
-                    <td>2000</td>
-                    <td>5000</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+
+
+                {% for each in records %}
+                    <tr>
+                        <th scope="row">{{ each.id }}</th>
+                        <td>{{ each.name }}</td>
+                        <td>{{ each.type }}</td>
+                        <td>{{ each.buying_price }}</td>
+                        <td>{{ each.selling_price }}</td>
+                        <td>{{ each.stock }}</td>
+                        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#saleModal">Make sale</button></td>
+                        <td><button type="button" class="btn btn-secondary" data-dismiss="modal">Edit</button></td>
+                        <td><button type="button" class="btn btn-danger" data-dismiss="modal" data-target="#deleteModal">Delete</button></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+
+
+
                 </tbody>
             </table>
+
+            <div class="modal fade" id="saleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Make Sales</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="#" method="POST">
+                                <div class="form-group">
+                                    <label for="exampleFormControlInput1">Quantity</label>
+                                    <input name="quantity" type="string" class="form-control"
+                                           id="exampleFormControlInput1"
+                                           placeholder="Quantity">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Sale</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+        </div>
         </div>
     </div>
 

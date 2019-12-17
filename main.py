@@ -24,8 +24,10 @@ def create_tables():
 
 @app.route('/')
 def hello_world():
+    x = 'Leon'
+    records = Inventories.fetch_all_records()
 
-    return render_template('index.html')
+    return render_template('index.html', records=records, x=x)
 
 
 @app.route('/add_inventory', methods=['POST', 'GET'])
