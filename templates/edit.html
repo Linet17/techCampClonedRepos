@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit</title>
+</head>
+<body>
+{{ record.id }}
+{{ record.inv_name }}
+
+
+<form action="/add_inventory" method="POST">
+
+    {#                                input product name#}
+    <div class="form-group">
+        <label for="exampleFormControlInput1">Name</label>
+        <input name="inventory" type="string" class="form-control"
+               id="exampleFormControlInput1"
+               placeholder="Name of Product">
+    </div>
+
+    {#                                select type of product#}
+    <div class="form-group">
+        <label for="exampleFormControlSelect1">Type</label>
+        <select name="type" class="form-control" id="exampleFormControlSelect1"
+                placeholder="Select">
+            <option></option>
+            <option>Product</option>
+            <option>Service</option>
+        </select>
+    </div>
+
+    {#                                input buying price#}
+    <div class="form-group">
+        <label for="exampleFormControlInput1">Buying Price</label>
+        <input name="buyingPrice" type="float" class="form-control"
+               id="exampleFormControlInput1"
+               placeholder="Enter Value">
+    </div>
+
+    {#                                input stock#}
+    <div class="form-group">
+        <label for="exampleFormControlInput1">Stock</label>
+        <input name="stock" type="integer" class="form-control"
+               id="exampleFormControlInput1"
+               placeholder="Enter Value">
+    </div>
+    {#                                input Selling Price#}
+    <div class="form-group">
+        <label for="exampleFormControlInput1">Selling Price</label>
+        <input name="sellingPrice" type="float" class="form-control"
+               id="exampleFormControlInput1"
+               placeholder="Enter Value">
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </div>
+
+</form>
+</body>
+</html>

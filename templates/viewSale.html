@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Purchase</title>
+</head>
+<body>
+<h4>Purchase Made</h4>
+
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        {#                    create columns of the above table#}
+        <th scope="col">Id</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Stock Remaining</th>
+        <th scope="col">Total Sales</th>
+
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for each in records %}
+    <tr>
+        <th scope="row">{{ each.id }}</th>
+        <td>{{ each.inv_name }}</td>
+        <td>{{ each.stock - each.quantity }}</td>
+        <td>{{ each.sellingPrice * each.quantity }}</td>
+
+    </tbody>
+</table>
+
+</body>
+</html>
