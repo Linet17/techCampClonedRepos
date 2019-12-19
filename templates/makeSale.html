@@ -1,37 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sales Made</title>
-</head>
-<body>
-<h4>Total Sales Made</h4>
+{% extends 'base.html' %}
 
-<tbody>
-{% for each in records %}
-<tr>
-    <th scope="row">{{ each.id }}</th>
-    <td>{{ each.inv_name }}</td>
-    <td>{{ each.quantity }}</td>
-    <td>{{ each.stock - each.quantity }}</td>
-    <td>{{ each.sellingPrice * each.quantity }}</td>
+{#jinja title block#}
+{% block title %}
+    Sales Made
+{% endblock %}
 
-</tbody>
+{#jinja style block#}
+{% block styles %}
+    <link rel="stlesheet" href="/static/css/main.css">
+{% endblock %}
 
-<table class="table table-striped">
-    <thead>
-    <tr>
-        {#                    create columns of the above table#}
-        <th scope="col">Id</th>
-        <th scope="col">Product Name</th>
-        <th scope="col">Quantity</th>
-        <th scope="col">Remaining Stock</th>
-        <th scope="col">Total Amount Spent</th>
+{#jinja body block#}
+{% block content %}
 
-    </tr>
-    </thead>
+    <body>
+    <h4>Total Sales Made</h4>
 
-</table>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            {#                    create columns of the above table#}
+            <th scope="col">Id</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Remaining Stock</th>
+            <th scope="col">Total Amount Spent</th>
 
-</body>
-</html>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for each in records %}
+        <tr>
+            <th scope="row">{{ each.id }}</th>
+            <td>{{ each.inv_name }}</td>
+            <td>{{ each.quantity }}</td>
+            <td>{{ each.stock - each.quantity }}</td>
+            <td>{{ each.sellingPrice * each.quantity }}</td>
+
+        </tbody>
+    </table>
+
+    </body>
+    </html>
+
+{% endblock %}

@@ -3,10 +3,13 @@ from main import db
 
 class Sales(db.Model):
     __tablename__ = 'sales'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     inv_id = db.Column(db.Integer, db.ForeignKey('inventories.id'))
     quantity = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 
 
     def add_records(self):

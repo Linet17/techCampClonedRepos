@@ -1,63 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit</title>
-</head>
-<body>
-{{ record.id }}
-{{ record.inv_name }}
+{% extends 'base.html' %}
 
+{#jinja title block#}
+{% block title %}
+    Edit Inventory
+{% endblock %}
 
-<form action="/add_inventory" method="POST">
+{#jinja style block#}
+{% block styles %}
+    <link rel="stlesheet" href="/static/css/main.css">
+{% endblock %}
 
-    {#                                input product name#}
-    <div class="form-group">
-        <label for="exampleFormControlInput1">Name</label>
-        <input name="inventory" type="string" class="form-control"
-               id="exampleFormControlInput1"
-               placeholder="Name of Product">
+{#jinja body block#}
+{% block content %}
+
+    <body>
+    {{ record.id }}
+    {{ record.inv_name }}
+
+    <div class="container">
+        <form action="/edit/{{ record.id }}" method="POST">
+
+            {#                                input product name#}
+            <div class="form-group">
+                <label for="exampleFormControlInput1">Name</label>
+                <input name="inventory" value="{{ record.inv_name }}" type="string" class="form-control"
+                       id="exampleFormControlInput1"
+                       placeholder="Name of Product">
+            </div>
+
+            {#                                select type of product#}
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Type</label>
+                <select name="type" value="{{ record.inv_type }}" class="form-control" id="exampleFormControlSelect1"
+                        placeholder="Select">
+                    <option></option>
+                    <option>Product</option>
+                    <option>Service</option>
+                </select>
+            </div>
+
+            {#                                input buying price#}
+            <div class="form-group">
+                <label for="exampleFormControlInput1">Buying Price</label>
+                <input name="buyingPrice" value="{{ record.buyingPrice }}" type="integer" class="form-control"
+                       id="exampleFormControlInput1"
+                       placeholder="Enter Value">
+            </div>
+
+            {#                                input stock#}
+            <div class="form-group">
+                <label for="exampleFormControlInput1">Stock</label>
+                <input name="stock" value="{{ record.stock }}" type="integer" class="form-control"
+                       id="exampleFormControlInput1"
+                       placeholder="Enter Value">
+            </div>
+            {#                                input Selling Price#}
+            <div class="form-group">
+                <label for="exampleFormControlInput1">Selling Price</label>
+                <input name="sellingPrice" value="{{ record.sellingPrice }}" type="integer" class="form-control"
+                       id="exampleFormControlInput1"
+                       placeholder="Enter Value">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+
+        </form>
     </div>
-
-    {#                                select type of product#}
-    <div class="form-group">
-        <label for="exampleFormControlSelect1">Type</label>
-        <select name="type" class="form-control" id="exampleFormControlSelect1"
-                placeholder="Select">
-            <option></option>
-            <option>Product</option>
-            <option>Service</option>
-        </select>
-    </div>
-
-    {#                                input buying price#}
-    <div class="form-group">
-        <label for="exampleFormControlInput1">Buying Price</label>
-        <input name="buyingPrice" type="float" class="form-control"
-               id="exampleFormControlInput1"
-               placeholder="Enter Value">
-    </div>
-
-    {#                                input stock#}
-    <div class="form-group">
-        <label for="exampleFormControlInput1">Stock</label>
-        <input name="stock" type="integer" class="form-control"
-               id="exampleFormControlInput1"
-               placeholder="Enter Value">
-    </div>
-    {#                                input Selling Price#}
-    <div class="form-group">
-        <label for="exampleFormControlInput1">Selling Price</label>
-        <input name="sellingPrice" type="float" class="form-control"
-               id="exampleFormControlInput1"
-               placeholder="Enter Value">
-    </div>
-
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save changes</button>
-    </div>
-
-</form>
-</body>
-</html>
+    </body>
+    </html>
+{% endblock %}

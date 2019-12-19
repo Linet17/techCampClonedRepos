@@ -1,13 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-</head>
+{% extends 'base.html' %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block styles %}
+
+    <link rel="stlesheet" href="/static/css/main.css">
+
+{% endblock %}
+
+{% block content %}
+
 <body>
-<div class="container" align="left">
-    <embed type="image/svg+xml" src={{ pie_data|safe }} style='max-width:1000px'/>
-</div>
+{#<div class="container" align="left">#}
+{#    <embed type="image/svg+xml" src={{ pie_data|safe }} style='max-width:1000px'/>#}
+{#</div>#}
 
 <div class="container" align="left">
     <embed type="image/svg+xml" src={{ graph_data|safe }} style='max-width:1000px'/>
@@ -15,3 +23,5 @@
 
 </body>
 </html>
+
+{% endblock %}

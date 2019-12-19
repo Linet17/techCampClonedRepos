@@ -1,19 +1,40 @@
-{#extends is a keyword of jinja2 that inherits the file you want to use in this file#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sales Management</title>
 
-{% extends 'base.html' %}
+    {#bootsrtap and styling#}
 
-{#jinja title block#}
-{% block title %}
-   Sales Management
-{% endblock %}
+    {#    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"#}
+    {#          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">#}
 
-{#jinja style block#}
-{% block styles %}
-    <link rel="stlesheet" href="/static/css/main.css">
-{% endblock %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-{#jinja body block#}
-{% block content %}
+    <style>
+        body {
+            background-color: white;
+        }
+
+        h1 {
+            color: black;
+            text-align: center;
+        }
+
+        p {
+            font-family: verdana;
+            font-size: 20px;
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+
+
+</head>
 
 <body>
 <div class="container">
@@ -123,8 +144,8 @@
                     <th scope="col">Stock</th>
                     <th scope="col">Selling Price</th>
 
-                    <th scope="col">Make Sale</th>
                     <th scope="col">Edit</th>
+                    <th scope="col">View Sale</th>
                     <th scope="col">Delete</th>
                 </tr>
                 </thead>
@@ -137,8 +158,8 @@
                         <td>{{ each.inv_name }}</td>
                         <td>{{ each.inv_type }}</td>
                         <td>{{ each.buyingPrice }}</td>
-                        <td>{{ each.stock }}</td>
                         <td>{{ each.sellingPrice }}</td>
+                        <td>{{ each.stock }}</td>
 
                         <td>
 
@@ -185,6 +206,11 @@
                             </a>
                         </td>
 
+                        <td>
+                            <a href="/viewsales/{{ each.id }}">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">View Sales</button>
+                            </a>
+                        </td>
                         <td>
                             <a href="/delete/{{ each.id }}">
                                 <button type="button" class="btn btn-danger" data-dismiss="modal"
@@ -245,5 +271,4 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 </body>
-
-{% endblock %}
+</html>

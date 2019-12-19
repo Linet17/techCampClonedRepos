@@ -16,11 +16,13 @@ class Inventories(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # research on additional objects you can pass in the column id
     inv_name = db.Column(db.String, nullable=False)
     inv_type = db.Column(db.String, nullable=False)
-    buyingPrice = db.Column(db.Float, nullable=False)
-    sellingPrice = db.Column(db.Float, nullable=False)
+    buyingPrice = db.Column(db.Integer, nullable=False)
+    sellingPrice = db.Column(db.Integer, nullable=False)
     stock = db.Column(db.Integer, nullable=False)
 
     sales = db.relationship("Sales", backref="inventory", lazy=True)
+
+
 
     def add_records(self):
         db.session.add(self)

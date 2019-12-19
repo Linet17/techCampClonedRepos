@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 
 import pygal
 
+from pygal import graph
+
 import psycopg2
 
 from flask_sqlalchemy import SQLAlchemy
@@ -24,10 +26,10 @@ def create_tables():
 
 @app.route('/')
 def hello_world():
-    x = 'Leon'
+    # x = 'Leon'
     records = Inventories.fetch_all_records()
 
-    return render_template('index.html', records=records, x=x)
+    return render_template('index.html', records=records)
 
 
 @app.route('/add_inventory', methods=['POST', 'GET'])
@@ -58,7 +60,7 @@ def add_inventory():
 # create a route for making sales
 @app.route('/salepro/<int:id>', methods=['POST', 'GET'])
 def makeSales(id):
-    print(id)
+    # print(id)
     # fetch the exact line/record from db of the particular product to be sold
     record = Inventories.fetch_one_record(id)
     if record:
@@ -69,11 +71,12 @@ def makeSales(id):
             newStock = record.stock - int(quantity)
             # update the same record to the new stock number calculated above
             record.stock = newStock
-            print(quantity)
+            # print(quantity)
             db.session.commit()
 
-            sales = Sales(inv_id=id, quantity=quantity)
-            sales.add_records()
+            # sales = Sales(inv_id=id, quantity=quantity)
+            # sales.add_records()
+            # db.session.commit()
 
             flash('You have successfully made a sale', 'success')
             return redirect(url_for('hello_world'))
@@ -81,18 +84,18 @@ def makeSales(id):
 
 
 # create a route for viewing sales
-@app.route('/viewsales/<int:id>')
+@app.route('/viewsale/<int:id>')
 def viewSales(id):
-    product = Inventories.fetch_one_record(id)
+    record = Inventories.fetch_one_record(id)
 
-    return render_template('viewSales.html', product=product)
+    return render_template('viewSale.html', record=record)
 
 
 # @app.route('/test/<num1>/<num2>')
 # def test(num1, num2):
 #     return num1 + num2
 
-@app.route('/edit/<int:id>',methods=['POST','GET'])
+@app.route('/edit/<int:id>', methods=['POST', 'GET'])
 def edit(id):
     record = Inventories.fetch_one_record(id)
 
@@ -105,9 +108,9 @@ def edit(id):
 
         db.session.commit()
 
-        return redirect('/')
+        return redirect(url_for('hello_world'))
 
-    return render_template('edit.html',record=record)
+    return render_template('edit.html', record=record)
 
 
 @app.route('/delete/<int:id>')
@@ -124,67 +127,75 @@ def delete(id):
 
 
 @app.route('/dashboard')
-def piechart():
-    conn = psycopg2.connect("dbname='salesDemo' user='postgres' host='127.0.0.1' password='0000' ")
+def charts():
+    conn = psycopg2.connect("dbname='abcDB' user='postgres' host='127.0.0.1' password='0000' ")
 
-    ratios = [('Gentlemen', 5), ('Ladies', 9)]
-    ratios[0][0]
-    # ratios1 = [{},{}]
-    pie_chart = pygal.Pie()
-    pie_chart.title = 'Browser usage in February 2012 (in %)'
-    pie_chart.add(ratios[0][0], ratios[0][1])
-    pie_chart.add(ratios[1][0], ratios[1][1])
-    # pie_chart.add('Chrome', 36.3)
-    # pie_chart.add('Safari', 4.5)
-    # pie_chart.add('Opera', 2.3)
-    pie_data = pie_chart.render_data_uri()
+    # ratios = [('Gentlemen', 5), ('Ladies', 9)]
+    # ratios[0][0]
+    # # ratios1 = [{},{}]
+    # pie_chart = pygal.Pie()
+    # pie_chart.title = 'Browser usage in February 2012 (in %)'
+    # pie_chart.add(ratios[0][0], ratios[0][1])
+    # pie_chart.add(ratios[1][0], ratios[1][1])
+    # # pie_chart.add('Chrome', 36.3)
+    # # pie_chart.add('Safari', 4.5)
+    # # pie_chart.add('Opera', 2.3)
+    # pie_data = pie_chart.render_data_uri()
 
-    data = [
-        {'month': 'January', 'total': 22},
-        {'month': 'February', 'total': 27},
-        {'month': 'March', 'total': 23},
-        {'month': 'April', 'total': 20},
-        {'month': 'May', 'total': 12},
-        {'month': 'June', 'total': 32},
-        {'month': 'July', 'total': 42},
-        {'month': 'August', 'total': 72},
-        {'month': 'September', 'total': 52},
-        {'month': 'October', 'total': 42},
-        {'month': 'November', 'total': 92},
-        {'month': 'December', 'total': 102}
-    ]
+    # data = [
+    #     {'month': 'January', 'total': 22},
+    #     {'month': 'February', 'total': 27},
+    #     {'month': 'March', 'total': 23},
+    #     {'month': 'April', 'total': 20},
+    #     {'month': 'May', 'total': 12},
+    #     {'month': 'June', 'total': 32},
+    #     {'month': 'July', 'total': 42},
+    #     {'month': 'August', 'total': 72},
+    #     {'month': 'September', 'total': 52},
+    #     {'month': 'October', 'total': 42},
+    #     {'month': 'November', 'total': 92},
+    #     {'month': 'December', 'total': 102}
+    # ]
+
     cur = conn.cursor()
 
-    cur.execute("""SELECT (sum(i.selling_price * s.quatity)) as subTotal,sum(quantity)) as totalQuantity, EXTRACT(MONTH FROM s.created_at) as salesMonth 
-    from sales as s 
-    join inventories as i on s.inv_id = i.id
-    GROUP BY salesMonth
-    ORDER BY salesMonth
-    """)
+    # cur.execute("""SELECT (sum(i.sellingPrice * s.quantity)) as salesTotal, EXTRACT(MONTH FROM s.created_at) as salesMonth
+    # from sales as s
+    # join inventories as i on s.inv_id = i.id
+    # GROUP BY salesMonth
+    # ORDER BY salesMonth""")
+
+    cur.execute("""SELECT distinct inventories.inv_type as invType,(sum(sales.quantity)over (partition by inventories.inv_type)) as quantitySold
+from sales join inventories on sales.inv_id = inventories.id""")
 
     rows = cur.fetchall()
-    # print(type(rows))
-    months = []
-    total_sales = []
+
+    invType = []
+    quantitySold = []
 
     for each in rows:
-        months.append(each[1])
-        total_sales.append(each[0])
+        invType.append(each[1])
+        quantitySold.append(each[1])
 
-    print(months)
-    print(total_sales)
+    graph = pygal.Bar(title='View quantity sold with every inventory',x_title='Inventory Category',y_title='Quantity Sold')
+    # graph.title = 'Inventory Category VS Quantity Sold'
 
-    graph = pygal.Line()
-    graph.title = '% Change Coolness of programming languages over time.'
-    graph.x_labels = months
-    graph.add('Total Sales', total_sales)
+    graph.x_labels = invType
+    graph.add('Inventory Category', invType)
+
+    graph.y_labels = quantitySold
+    graph.y_labels = map(str, range(450, 800))
+    graph.add('Quantity Sold', quantitySold)
+
     # graph.add('Java', [15, 45, 76, 80, 91, 95])
     # graph.add('C++', [5, 51, 54, 102, 150, 201])
     # graph.add('All others combined!', [5, 15, 21, 55, 92, 105])
-    graph_data = graph.render_data_uri()
-    # return render_template("graphing.html", graph_data=graph_data)
 
-    return render_template('dashboard.html', pie_data=pie_data, graph_data=graph_data)
+    graph_data = graph.render_data_uri()
+
+    # , pie_data = pie_data
+
+    return render_template('dashboard.html', graph_data=graph_data)
 
 
 if __name__ == '__main__':
