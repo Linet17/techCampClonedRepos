@@ -1,0 +1,15 @@
+Click==7.0
+Flask==1.1.1
+Flask-SQLAlchemy==2.4.1
+gunicorn==20.0.4
+itsdangerous==1.1.0
+Jinja2==2.10.3
+MarkupSafe==1.1.1
+mysql-connector==2.2.9
+psycopg2==2.8.4
+pygal==2.4.0
+PyMySQL==0.9.3
+PyMysqlDB==0.0.2
+socket.py==0.1.0
+SQLAlchemy==1.3.10
+Werkzeug==0.16.0
