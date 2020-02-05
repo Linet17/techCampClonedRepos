@@ -1,21 +1,28 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 
 import pygal
 
-from pygal import graph
+from pygal import *
+import pickle
+
+import numpy as np
 
 import psycopg2
 
 from flask_sqlalchemy import SQLAlchemy
 
-from config.config import Development,Production
+from config.config import Development, Production
 
 app = Flask(__name__)
-app.config.from_object(Production)
+app.config.from_object(Development)
 db = SQLAlchemy(app)
 
 from models.inventories import Inventories
 from models.sales import Sales
+
+from static import *
+
+model = pickle.load(open('model.pkl', 'rb'))
 
 
 @app.before_first_request
@@ -38,19 +45,19 @@ def add_inventory():
         # saving values in each field in their appropriate variables
         invName = request.form['inventory']
         type = request.form['type']
-        buyingPrice = request.form['buyingPrice']
+        buying_price = request.form['buying_price']
         stock = request.form['stock']
-        sellingPrice = request.form['sellingPrice']
+        selling_price = request.form['selling_price']
 
         print(invName)
         print(type)
-        print(buyingPrice)
-        print(sellingPrice)
+        print(buying_price)
+        print(selling_price)
         print(stock)
 
         # saving values from form ,per record,into the db
-        record = Inventories(inv_name=invName, inv_type=type, buyingPrice=buyingPrice, stock=stock,
-                             sellingPrice=sellingPrice)
+        record = Inventories(inv_name=invName, inv_type=type, buying_price=buying_price, stock=stock,
+                             selling_price=selling_price)
         record.add_records()
 
     # return home page/route
@@ -102,9 +109,9 @@ def edit(id):
     if request.method == 'POST':
         record.invName = request.form['inventory']
         record.type = request.form['type']
-        record.buyingPrice = request.form['buyingPrice']
+        record.buyingPrice = request.form['buying_price']
         record.stock = request.form['stock']
-        record.sellingPrice = request.form['sellingPrice']
+        record.sellingPrice = request.form['selling_price']
 
         db.session.commit()
 
@@ -130,32 +137,32 @@ def delete(id):
 def charts():
     conn = psycopg2.connect("dbname='abcDB' user='postgres' host='127.0.0.1' password='0000' ")
 
-    # ratios = [('Gentlemen', 5), ('Ladies', 9)]
-    # ratios[0][0]
-    # # ratios1 = [{},{}]
-    # pie_chart = pygal.Pie()
-    # pie_chart.title = 'Browser usage in February 2012 (in %)'
-    # pie_chart.add(ratios[0][0], ratios[0][1])
-    # pie_chart.add(ratios[1][0], ratios[1][1])
-    # # pie_chart.add('Chrome', 36.3)
-    # # pie_chart.add('Safari', 4.5)
-    # # pie_chart.add('Opera', 2.3)
-    # pie_data = pie_chart.render_data_uri()
+    ratios = [('Gentlemen', 5), ('Ladies', 9)]
+    ratios[0][0]
+    # ratios1 = [{},{}]
+    pie_chart = pygal.Pie()
+    pie_chart.title = 'Browser usage in February 2012 (in %)'
+    pie_chart.add(ratios[0][0], ratios[0][1])
+    pie_chart.add(ratios[1][0], ratios[1][1])
+    # pie_chart.add('Chrome', 36.3)
+    # pie_chart.add('Safari', 4.5)
+    # pie_chart.add('Opera', 2.3)
+    pie_data = pie_chart.render_data_uri()
 
-    # data = [
-    #     {'month': 'January', 'total': 22},
-    #     {'month': 'February', 'total': 27},
-    #     {'month': 'March', 'total': 23},
-    #     {'month': 'April', 'total': 20},
-    #     {'month': 'May', 'total': 12},
-    #     {'month': 'June', 'total': 32},
-    #     {'month': 'July', 'total': 42},
-    #     {'month': 'August', 'total': 72},
-    #     {'month': 'September', 'total': 52},
-    #     {'month': 'October', 'total': 42},
-    #     {'month': 'November', 'total': 92},
-    #     {'month': 'December', 'total': 102}
-    # ]
+    data = [
+        {'month': 'January', 'total': 22},
+        {'month': 'February', 'total': 27},
+        {'month': 'March', 'total': 23},
+        {'month': 'April', 'total': 20},
+        {'month': 'May', 'total': 12},
+        {'month': 'June', 'total': 32},
+        {'month': 'July', 'total': 42},
+        {'month': 'August', 'total': 72},
+        {'month': 'September', 'total': 52},
+        {'month': 'October', 'total': 42},
+        {'month': 'November', 'total': 92},
+        {'month': 'December', 'total': 102}
+    ]
 
     cur = conn.cursor()
 
@@ -177,7 +184,8 @@ from sales join inventories on sales.inv_id = inventories.id""")
         invType.append(each[1])
         quantitySold.append(each[1])
 
-    graph = pygal.Bar(title='View quantity sold with every inventory',x_title='Inventory Category',y_title='Quantity Sold')
+    graph = pygal.Bar(title='View quantity sold with every inventory', x_title='Inventory Category',
+                      y_title='Quantity Sold')
     # graph.title = 'Inventory Category VS Quantity Sold'
 
     graph.x_labels = invType
@@ -195,7 +203,64 @@ from sales join inventories on sales.inv_id = inventories.id""")
 
     # , pie_data = pie_data
 
-    return render_template('dashboard.html', graph_data=graph_data)
+    return render_template('dashboard.html', graph_data=graph_data, pie_data=pie_data)
+
+
+@app.route('/predictor', methods=['POST', 'GET'])
+def predictor():
+    if request.method == 'GET':
+        select_year = '2019'
+    else:
+        select_product = request.form['selected_product']
+    rows = db.engine.execute(""" select (sum(i.buying_price*s.quantity)) as subtotal, 
+        extract(Month from s.created_at)
+         from public.inventories i join 
+        public.sales s on i.id=s.inv_id where Extract(year from s.created_at)=""" + select_year + """
+         group by extract (month from s.created_at) 
+         order by extract (month from s.created_at)""")
+
+    # product = []
+    # totStock = []
+    #
+    # for each in rows:
+    #     product.append(each[1])
+    #     totStock.append(each[0])
+    # graph = pygal.Bar()
+    # graph.title = 'Remaining Stock per Product'
+    # # graph.x_labels = product
+    # # graph.add('Product', product)
+    # graph.x_labels = totStock
+    # graph.add('Total Stock', totStock)
+
+    months = []
+    total_sales = []
+
+    for each in rows:
+        months.append(each[1])
+        total_sales.append(each[0])
+    graph = pygal.Line()
+    graph.title = 'Sales over time in year ' + select_year
+    graph.x_labels = months
+    graph.add('Total Sales', total_sales)
+    graph_data = graph.render_data_uri()
+    return render_template('predictor.html', graph_data=graph_data)
+
+
+@app.route('/<int:year>')
+def predictorResults(year):
+    # Load pickle file from the "sales_ml.ipynb"
+    model = pickle.load(open('smodel.pkl', 'rb'))
+    var = [[year, 400, 500, 100, 150, 210]]
+
+    # Convert the var to a Numpy array
+    var = np.array(var)
+
+    # This has the Y for the year
+    prediction = round(model.predict(var)[0][0], 2)
+    print(prediction)
+
+    # return jsonify(result)
+    return render_template("predictor.html", y_sales=predictor)
 
 
 if __name__ == '__main__':

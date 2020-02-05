@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Predictor
+{% endblock %}
+
+{% block styles %}
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+{% endblock %}
+
+{% block content %}
+
+    <body>
+
+    <div class="row" style="margin-left:20px;padding-top: 40px">
+
+        <div class="login">
+	<h1>Sales Forecasting</h1>
+
+     <!-- Main Input For Receiving Query to our ML -->
+    <form action="{{ url_for('predictor')}}"method="post">
+    	<input type="text" name="rate" placeholder="rate" required="required" />
+        <input type="text" name="sales in first month" placeholder="sales in first month" required="required" />
+		<input type="text" name="sales in second month" placeholder="sales in second month" required="required" />
+        <button type="submit" class="btn btn-primary btn-block btn-large">Predict sales in third month</button>
+    </form>
+
+   <br>
+   <br>
+   {{ prediction_text }}
+
+ </div>
+
+{#        <div class="m4 w-25" style="margin-left:20px; padding-left: 20px">#}
+{#            <form method="post" action="/predictor">#}
+{#                <label>Select Product</label>#}
+{#                {% for each in records %}#}
+{#                <select name="select_product" class="form-control">#}
+{##}
+{#                    <option value="inv_name">{{ each.inv_name }}</option>#}
+                    {#            <option  value="2016">2016</option>#}
+                    {#            <option value="2017">2017</option>#}
+                    {#            <option value="2018">2018</option>#}
+                    {#            <option value="2019">2019</option>#}
+                    {#            <option value="2020">2020</option>#}
+{#                </select>#}
+{#                {% endfor %}#}
+{#                <br>#}
+{#                <input type="submit"/>#}
+{#            </form>#}
+{#        </div>#}
+        <div class="container w-50">
+            <embed type="image/svg+xml" src={{ graph_data|safe }} style='max-width:1000px'/>
+        </div>
+    </div>
+
+    </body>
+
+    </html>
+
+{% endblock %}
